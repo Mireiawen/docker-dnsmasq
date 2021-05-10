@@ -17,14 +17,8 @@ services:
     hostname: '$HOSTNAME.$DOMAIN'
     container_name: 'dnsmasq'
     ports:
-    - target: 53
-      published: '$HOST:53'
-      protocol: 'udp'
-      mode: 'host'
-    - target: 53
-      published: '$HOST:53'
-      protocol: 'tcp'
-      mode: 'host'
+    - '$HOST:53:53/udp'
+    - '$HOST:53:53/tcp'
     labels:
     - 'traefik.enable=true'
     - 'traefik.http.routers.dnsmasq.rule=Host(`$HOSTNAME.$DOMAIN`)'
