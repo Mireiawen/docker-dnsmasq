@@ -9,12 +9,12 @@ services:
       context: '.'
     image: 'mireiawen/dnsmasq:latest'
     restart: 'always'
+    networks:
+    - 'traefik'
     volumes:
     - type: 'volume'
       source: 'config'
       target: '/etc/dnsmasq'
-    network_mode: 'bridge'
-    hostname: '$HOSTNAME.$DOMAIN'
     container_name: 'dnsmasq'
     ports:
     - '$HOST:53:53/udp'
@@ -23,15 +23,18 @@ services:
     - 'traefik.enable=true'
     - 'traefik.http.routers.dnsmasq.rule=Host(`$HOSTNAME.$DOMAIN`)'
     - 'traefik.http.routers.dnsmasq.entrypoints=web'
-    - 'traefik.http.routers.dnsmasq.middlewares=dnsmasq-whitelist,http-to-https'
+    - 'traefik.http.routers.dnsmasq.middlewares=whitelist@file,http-to-https@file'
     - 'traefik.http.routers.dnsmasq.service=dnsmasq'
     - 'traefik.http.routers.dnsmasq-secure.rule=Host(`$HOSTNAME.$DOMAIN`)'
     - 'traefik.http.routers.dnsmasq-secure.entrypoints=websecure'
-    - 'traefik.http.routers.dnsmasq-secure.middlewares=dnsmasq-whitelist'
+    - 'traefik.http.routers.dnsmasq-secure.middlewares=whitelist@file'
     - 'traefik.http.routers.dnsmasq-secure.service=dnsmasq'
-    - 'traefik.http.middlewares.dnsmasq-whitelist.ipwhitelist.sourcerange=$NETWORKS'
     - 'traefik.http.services.dnsmasq.loadbalancer.passhostheader=true'
     - 'traefik.http.services.dnsmasq.loadbalancer.server.port=8080'
 
 volumes:
   config: {}
+
+networks:
+  traefik:
+    external: true
