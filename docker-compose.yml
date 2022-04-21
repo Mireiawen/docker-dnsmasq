@@ -22,14 +22,9 @@ services:
     labels:
     - 'traefik.enable=true'
     - 'traefik.http.routers.dnsmasq.rule=Host(`$HOSTNAME.$DOMAIN`)'
-    - 'traefik.http.routers.dnsmasq.entrypoints=web'
-    - 'traefik.http.routers.dnsmasq.middlewares=ipwhitelist@file,http-to-https@file'
+    - 'traefik.http.routers.dnsmasq.entrypoints=websecure'
+    - 'traefik.http.routers.dnsmasq.middlewares=$MIDDLEWARE'
     - 'traefik.http.routers.dnsmasq.service=dnsmasq'
-    - 'traefik.http.routers.dnsmasq-secure.rule=Host(`$HOSTNAME.$DOMAIN`)'
-    - 'traefik.http.routers.dnsmasq-secure.entrypoints=websecure'
-    - 'traefik.http.routers.dnsmasq-secure.middlewares=ipwhitelist@file,auth@file'
-
-    - 'traefik.http.routers.dnsmasq-secure.service=dnsmasq'
     - 'traefik.http.services.dnsmasq.loadbalancer.passhostheader=true'
     - 'traefik.http.services.dnsmasq.loadbalancer.server.port=8080'
 
