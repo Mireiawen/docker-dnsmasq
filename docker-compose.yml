@@ -11,16 +11,16 @@ services:
     restart: 'unless-stopped'
     networks:
     - 'traefik'
+    ports:
+    - '$HOST:53:53/udp'
+    - '$HOST:53:53/tcp'
     volumes:
     - type: 'volume'
       source: 'config'
       target: '/etc/dnsmasq'
-    container_name: 'dnsmasq'
-    ports:
-    - '$HOST:53:53/udp'
-    - '$HOST:53:53/tcp'
     labels:
     - 'traefik.enable=true'
+    - 'traefik.docker.network=traefik'
     - 'traefik.http.routers.dnsmasq.rule=Host(`$HOSTNAME.$DOMAIN`)'
     - 'traefik.http.routers.dnsmasq.entrypoints=websecure'
     - 'traefik.http.routers.dnsmasq.middlewares=$MIDDLEWARE'
@@ -28,9 +28,9 @@ services:
     - 'traefik.http.services.dnsmasq.loadbalancer.passhostheader=true'
     - 'traefik.http.services.dnsmasq.loadbalancer.server.port=8080'
 
-volumes:
-  config: {}
-
 networks:
   traefik:
     external: true
+
+volumes:
+  config: {}
