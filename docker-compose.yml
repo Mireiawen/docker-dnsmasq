@@ -12,21 +12,21 @@ services:
     networks:
     - 'traefik'
     ports:
-    - '$HOST:53:53/udp'
-    - '$HOST:53:53/tcp'
+    - '${HOST:?Host is not defined}:53:53/udp'
+    - '${HOST:?Host is not defined}:53:53/tcp'
     volumes:
     - type: 'volume'
       source: 'config'
       target: '/etc/dnsmasq'
     labels:
-    - 'traefik.enable=true'
-    - 'traefik.docker.network=traefik'
-    - 'traefik.http.routers.dnsmasq.rule=Host(`$HOSTNAME.$DOMAIN`)'
-    - 'traefik.http.routers.dnsmasq.entrypoints=websecure'
-    - 'traefik.http.routers.dnsmasq.middlewares=$MIDDLEWARE'
-    - 'traefik.http.routers.dnsmasq.service=dnsmasq'
-    - 'traefik.http.services.dnsmasq.loadbalancer.passhostheader=true'
-    - 'traefik.http.services.dnsmasq.loadbalancer.server.port=8080'
+      traefik.enable: true
+      traefik.docker.network: 'traefik'
+      traefik.http.routers.dnsmasq.rule: 'Host(`${HOSTNAME:?Hostname is not defined}.${DOMAIN:?Domain is not defined}`)'
+      traefik.http.routers.dnsmasq.entrypoints: 'websecure'
+      traefik.http.routers.dnsmasq.middlewares: '${MIDDLEWARE:?Middleware is not defined}'
+      traefik.http.routers.dnsmasq.service: 'dnsmasq'
+      traefik.http.services.dnsmasq.loadbalancer.passhostheader: true
+      traefik.http.services.dnsmasq.loadbalancer.server.port: 8080
 
 networks:
   traefik:
